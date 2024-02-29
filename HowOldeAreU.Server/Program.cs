@@ -1,3 +1,7 @@
+using HowOldeAreU.Server.Interfaces;
+using HowOldeAreU.Server.Mapping;
+using HowOldeAreU.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //SwaggerGEn documentation
@@ -5,6 +9,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton<IfaceServices, IfaceServices>();
+builder.Services.AddSingleton<Ifaces, Ifaces>();
+builder.Services.AddScoped<IfaceServices, FaceService>();
+
+builder.Services.AddAutoMapper(typeof(FaceMapping));
 
 var app = builder.Build();
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HowOldeAreU.Server.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HowOldeAreU.Server.Controllers
 {
@@ -6,6 +8,13 @@ namespace HowOldeAreU.Server.Controllers
     [Route("api/v1/[controller]")]
     public class ValuesController : ControllerBase
     {
+
+        public readonly IfaceServices _faces;
+        public ValuesController(IfaceServices faces)
+        {
+            _faces = faces;
+        }
+
         [HttpPost()]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
@@ -16,9 +25,18 @@ namespace HowOldeAreU.Server.Controllers
 
             var path = image.FileName;
 
-           
+            var response = await _faces.FaceGet(path);
 
-            return Ok("Imagem enviada com sucesso. " + path);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok("Imagem enviada com sucesso. " + response);
+
+            }
+            else
+            {
+                return StatusCode( (int)response.StatusCode, response.ErrorObject);
+            }
+
         }
     }
 }
